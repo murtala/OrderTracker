@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.NumberPicker;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class WaiterPage extends AppCompatActivity {
 
     @Override
@@ -35,7 +38,7 @@ public class WaiterPage extends AppCompatActivity {
 
         NumberPicker np=
                 (NumberPicker) findViewById(R.id.mealNumberPicker);
-        np.setMaxValue(values.length-1);
+        np.setMaxValue(values.length - 1);
         np.setMinValue(0);
         np.setDisplayedValues(values);
        // np.setMaxValue(9);
@@ -62,5 +65,25 @@ public class WaiterPage extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //submit the order
+    public void submitOrder(View view) {
+        //get data from the inputs
+        OrderData.getOrderStatus();
+        OrderData.getTableNumber();
+        OrderData.getNotes();
+
+        //send the request
+        String ip = null;
+        URL url = null; //&key=ABQIAAAADxhJjHRvoeM2WF3nxP5rCBRcGWwHZ9XQzXD3SWg04vbBlJ3EWxR0b0NVPhZ4xmhQVm3uUBvvRF-VAA&userip=192.168.0.172");
+        try {
+            url = new URL("https://ajax.googleapis.com/ajax/services/search/images?" + "v=1.0&q=" + "searchQueries.get(i)" + "&rsz=8&imgsz="+"imageSize"+"&hl=" + "currentLocale" + "&userip=" +ip + "&safe=active");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        ConnectionManager.setUrl(url);
+        ConnectionManager.openConnection();
+        // use json handler to get the data
     }
 }
