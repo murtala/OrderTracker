@@ -30,11 +30,17 @@ public class OrderData {
     private static Long dinner_qty;
     private static Long dessert_qty;
     private static String name;
+    private static Long start_time;
+    private static Long end_time;
+    private static Long user_type;
     private static String password;
+    private static String user;
     private static String device_id;
     private static JSONObject jsonObject;
     public static OrderData getOrder;
-
+    private static String orderStatusString;
+    public String waiter_name;
+    public String chef_name;
     //private final  BufferedReader reader;
 
     public OrderData(ConnectionManager cm) {
@@ -80,6 +86,46 @@ public class OrderData {
             e.printStackTrace();
         }
         return orderStatus;
+    }
+
+    public static String getOrderStatusStrings() {
+
+        orderStatusString = null;
+        try {
+            jsonObject.getInt("status");
+
+            switch (jsonObject.getInt("status")){
+                case 0://new order
+                    orderStatusString ="NEW";
+                    break;
+                case 1://view order
+                    orderStatusString = " - ";
+                    break;
+                case 2://edit order
+                    orderStatusString = " - ";
+                    break;
+                case 3://cancel order
+                    orderStatusString = "CANCELED";
+                    break;
+                case 4://complete order
+                    orderStatusString = "COMPLETED";
+                    break;
+                case 5://complete order
+                    orderStatusString = "IN PROGRESS";
+                    break;
+                default:
+                    orderStatusString = "INVALID";
+                    Log.d("???? " , "nothing valid selected");
+                    break;
+            }
+            Log.d("status", orderStatusString);
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return orderStatusString;
     }
 
     public static long getTableNumber() {
@@ -318,5 +364,92 @@ public class OrderData {
 
     public static void setId(Long id) {
         OrderData.id = id;
+    }
+
+    public static Long getUser_type() {
+
+        try {
+            user_type = Long.parseLong(jsonObject.getString("user_type"));
+            Log.d("user_type", user_type.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return user_type;
+    }
+
+    public static void setUser_type(Long user_type) {
+        OrderData.user_type = user_type;
+    }
+
+    public static Long getStart_time() {
+        try {
+            start_time = Long.parseLong(jsonObject.getString("start_time"));
+            Log.d("start_time", start_time.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return start_time;
+    }
+
+    public static void setStart_time(Long start_time) {
+        OrderData.start_time = start_time;
+    }
+
+    public static Long getEnd_time() {
+        try {
+            end_time = Long.parseLong(jsonObject.getString("end_time"));
+            Log.d("end_time", end_time.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return end_time;
+    }
+
+    public static void setEnd_time(Long end_time) {
+        OrderData.end_time = end_time;
+    }
+
+
+    public String getWaiter_name() {
+        try {
+            waiter_name = (jsonObject.getString("waiter_name"));
+            Log.d("waiter_name", waiter_name.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return waiter_name;
+    }
+
+    public void setWaiter_name(String waiter_name) {
+        this.waiter_name = waiter_name;
+    }
+
+    public String getChef_name() {
+        try {
+            chef_name = (jsonObject.getString("chef_name"));
+            Log.d("chef_name", chef_name.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return chef_name;
+    }
+
+    public void setChef_name(String chef_name) {
+        this.chef_name = chef_name;
+    }
+
+    public static String getUser() {
+        try {
+            user = (jsonObject.getString("user"));
+            Log.d("user", user.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public static void setUser(String user) {
+        OrderData.user = user;
     }
 }

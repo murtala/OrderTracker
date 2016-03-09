@@ -63,9 +63,30 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waiter"
+                    android:id="@+id/waiterRadioButton"
+                    android:checked="true"
+                    android:onClick="userType" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chef"
+                    android:id="@+id/chefRadioButton"
+                    android:checked="false"
+                    android:onClick="userType" />
+            </RadioGroup>
+
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

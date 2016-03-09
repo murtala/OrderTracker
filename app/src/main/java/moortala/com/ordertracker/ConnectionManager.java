@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,6 +20,8 @@ import java.net.URLConnection;
  * Created by moortala on 2/2/2016.
  */
 public class ConnectionManager extends AsyncTask<URL, Void, String> {
+
+    Callback callback;
     //static Context context;
     private static URLConnection connection;
     private static URL url;
@@ -28,11 +31,15 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     public BufferedReader JSONData;
     private BufferedReader responseString;
     public static JSONObject jsonObject;
-    Messages msg = new Messages();
+    Messages msg;
     Object Activity;
     Context loginActivity;
     private static ProgressDialog pd;
     static Activity activity;
+
+    boolean running;
+    ProgressDialog progressDialog;
+    private JSONArray jsonArray;
 
 
     public ConnectionManager(URL url) {
@@ -47,13 +54,41 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
 
 
 
-  /*  public ConnectionManager(Activity anActivity, URL url) {
+    public ConnectionManager(WaiterPage waiterPage, URL url) {
+        msg = new Messages(waiterPage);
+
+       // this.callback = callbck;
         ConnectionManager.setUrl(url);
+
+    }
+
+
+  /* public ConnectionManager(Activity anActivity, URL url) {
+        ConnectionManager.setUrl(url);
+
+       dialog = new ProgressDialog(anActivity);
        // activity=anActivity;
 
       //  msg = new Messages(activity);
-        msg.displayProgressDialog(anActivity,"ooooooooooo");
+     //   msg.displayProgressDialog(anActivity,"ooooooooooo");
+    }
+
+    public ConnectionManager(Callback callback) {
+
     }*/
+
+    public ConnectionManager(Context contxt, Callback callbck) {
+
+       msg = new Messages(contxt);
+
+        this.callback = callbck;
+      /*  dialog = new ProgressDialog(contxt);
+        // progressDialog.setTitle("Processing...");
+        //  progressDialog.setMessage("Please wait.");
+        dialog.setCancelable(true);
+        dialog.setIndeterminate(true);
+        dialog =  dialog.show(contxt, "Processing...", "<><><>");*/
+    }
 
 
     //get the connection
@@ -87,9 +122,9 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
 
     public InputStream getInputStream() {
         try {
-            Log.d("URL",  getUrl().toString());
+            Log.d("input stream ",  getUrl().toString());
             inputStream = getUrl().openConnection().getInputStream();
-            Log.d("inputStream",  inputStream.toString());
+        //    Log.d("inputStream",  inputStream.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,7 +135,7 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
         //getInputStream();
 
         BufferedReader responseString = new BufferedReader(new InputStreamReader(getInputStream()));
-        Log.d("responseString",  responseString.toString());
+      //  Log.d("responseString",  responseString.toString());
         return responseString;
     }
 
@@ -110,35 +145,29 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        System.out.println("888888888888");
-
-
-       // dialog.setMessage("Doing something, please wait.");
-      //  dialog.show();
-      //  msg.displayProgressDialog(context,"loading");
         super.onPreExecute();
-
-       // msg = new Messages(context);
-     //   msg.displayProgressDialog("loading");
+        System.out.println("on pre excecute");
+        msg.displayProgressDialog("", "loading...");
     }
 
     @Override
     protected String doInBackground(URL... params) {
         StringBuilder builder = new StringBuilder();
         try {
-            Log.d("params[0]", params[0].toString());
+            Log.d("in back ground- url: ", params[0].toString());
             setUrl(params[0]);
-            getResponseString();
+          //  getResponseString();
             String line;
             builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new InputStreamReader(getInputStream()));
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
-            Log.d("builder[0]", builder.toString());
+            Log.d("in bg - string data" , builder.toString());
+          //  setJsonArray( new JSONArray(builder.toString()));
         //    String dd = builder.toString();
            // jsonObject = new JSONObject(builder.toString());
-            System.out.println("9999999");
+         //   System.out.println("in background");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,8 +194,20 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
             dialog.dismiss();
         }*/
 
-        Log.d("Connection completed", "++++++");
+       // Log.d("Connection completed", "++++++");
         super.onPostExecute(string);
+
+        System.out.println("in onPostExecute");
+
+        callback.run(string);
+
+    /*    if (dialog.isShowing()) {
+           System.out.println("dismissing the dialog");
+          dialog.dismiss();
+        }*/
+
+        msg.dismissProgressDialog();
+
 
      /*   try {
             Thread.sleep(3000);
@@ -199,4 +240,11 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     }
 
 
+    public JSONArray getJsonArray() {
+        return jsonArray;
+    }
+
+    public void setJsonArray(JSONArray jsonArray) {
+        this.jsonArray = jsonArray;
+    }
 }

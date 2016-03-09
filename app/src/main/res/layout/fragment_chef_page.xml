@@ -11,137 +11,140 @@
 
 </RelativeLayout>-->
 
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <TableLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal">
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="horizontal">
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" waiter"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/userNameTextView"
-            android:textColor="#305523"
-            android:layout_column="0"
-            android:layout_weight="1" />
+            android:layout_weight="0.7"
+            android:layout_column="0" />
 
-        <EditText
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:id="@+id/tableNumberTextField"
-            android:allowUndo="true"
-            android:hint="Table #"
-            android:layout_row="1"
-            android:layout_rowSpan="1"
-            android:layout_column="1"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="#e11a1a"
-            android:textStyle="bold" />
+            android:layout_weight="0.3"
+            android:background="#f4ddf0">
 
-    </TableRow>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tableNumberTextField"
+                android:layout_weight="1"
+                android:layout_column="1"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STATUS"
+                android:id="@+id/textView14"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/orderStatusTextView"
+                android:gravity="center"
+                android:textColor="#ff5900"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TIME (minutes)"
+                android:id="@+id/textView17"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/timeTakenTextView"
+                android:textColor="#31fa04"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="#f4ddf0" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ORDER STATUS"
-            android:id="@+id/orderStatusTextView"
-            android:layout_column="0"
+            android:text="ACTION"
+            android:id="@+id/textView3"
             android:layout_weight="1"
-            android:textStyle="bold" />
+            android:layout_column="0" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ORDER NUMBER"
-            android:id="@+id/orderNumberTextView"
-            android:layout_weight="1"
-            android:textStyle="bold" />
+            android:id="@+id/textView4"
+            android:layout_weight="1" />
+
     </TableRow>
 
-    <TableRow
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/orderStatusSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/orderActionsSpinner"
+            android:layout_column="0"
             android:layout_weight="1"
-            android:background="#8fabce"
-            android:layout_gravity="center_horizontal" />
+            android:background="#8fabce" />
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/orderDetailsSpinner"
             android:layout_column="1"
             android:layout_weight="1"
-            android:background="#d2cca2"
-            android:layout_gravity="center_horizontal" />
-    </TableRow>
+            android:background="#d2cca2" />
+    </LinearLayout>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="#7c4242">
+        android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MENU"
-            android:id="@+id/textView"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:layout_rowSpan="2"
-            android:textStyle="bold"
+            android:id="@+id/textView2"
             android:gravity="center"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:textColor="#ffffff" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#ebe5e5"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" BREAKFAST "
-            android:id="@+id/breakfasTextView"
-            android:gravity="center"
-            android:layout_row="10"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" QUANTITY "
-            android:id="@+id/breakfastQuantityTextView"
-            android:layout_row="10"
-            android:layout_column="1"
-            android:textStyle="bold"
-            android:layout_weight="0.7"
-            android:gravity="center" />
-
+            android:background="#7c4242"
+            android:layout_weight="1" />
     </TableRow>
 
     <TableRow
@@ -149,244 +152,211 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <Spinner
+        <TextView
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BREAKFAST"
+            android:id="@+id/textView5"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QUANTITY"
+            android:id="@+id/textView6"
+            android:layout_weight="1"
+            android:gravity="end" />
+    </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ebe5e5"
+        android:layout_weight="1">
+
+        <Spinner
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/breakfastSpinner"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:layout_gravity="center_vertical"
-            android:background="#27decc" />
+            android:layout_weight="0.3" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/breakfastQtyEditText"
-            android:layout_row="11"
-            android:layout_column="1"
-            android:text="x2"
-            android:layout_weight="0.7"
-            android:textStyle="italic"
-            android:background="#fcecd6"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:inputType="numberDecimal" />
-    </TableRow>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
     <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LUNCH"
+            android:id="@+id/textView7"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QUANTITY"
+            android:id="@+id/textView8"
+            android:layout_weight="1"
+            android:gravity="right" />
+    </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ebe5e5"
         android:layout_weight="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" LUNCH "
-            android:id="@+id/lucnchTextView"
-            android:gravity="center"
-            android:layout_row="12"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" QUANTITY "
-            android:id="@+id/lucnchQuantityTextView"
-            android:layout_row="12"
-            android:layout_column="1"
-            android:layout_weight="0.7"
-            android:textStyle="bold"
-            android:gravity="center" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lunchSpinner"
-            android:layout_weight="0.3"
-            android:layout_column="0"
-            android:layout_gravity="center_vertical"
-            android:background="#d7b116" />
+            android:layout_weight="0.3" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/lunchQtyEditText"
-            android:layout_row="15"
-            android:layout_column="1"
-            android:text="x2"
-            android:layout_weight="0.7"
-            android:textStyle="italic"
-            android:layout_gravity="center_vertical"
-            android:background="#fcecd6"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_horizontal"
-            android:layout_marginRight="10dp"
-            android:inputType="numberDecimal" />
-    </TableRow>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
     <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DINNER"
+            android:id="@+id/textView9"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QUANTITY"
+            android:id="@+id/textView10"
+            android:layout_weight="1"
+            android:gravity="right" />
+    </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ebe5e5"
         android:layout_weight="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" DINNER "
-            android:id="@+id/dinnerTextView"
-            android:gravity="center"
-            android:layout_row="14"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" QUANTITY "
-            android:id="@+id/dinnerQuantityTextView"
-            android:layout_row="14"
-            android:layout_column="1"
-            android:layout_weight="0.7"
-            android:textStyle="bold"
-            android:gravity="center" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/dinnerSpinner"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:layout_gravity="center_vertical"
-            android:background="#837979" />
+            android:layout_weight="0.3" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/dinnerQtyEditText"
-            android:layout_row="13"
-            android:layout_column="1"
-            android:text="x2"
-            android:layout_weight="0.7"
-            android:textStyle="italic"
-            android:layout_gravity="center_vertical"
-            android:background="#fcecd6"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_horizontal"
-            android:layout_marginRight="10dp"
-            android:inputType="numberDecimal" />
-    </TableRow>
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center" />
+    </LinearLayout>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ebe5e5"
         android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" DESSERT &amp; DRINKS"
-            android:id="@+id/dessertTextView"
-            android:gravity="center"
-            android:layout_row="16"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:textStyle="bold" />
+            android:text="DESSERT &amp; DRINKS"
+            android:id="@+id/textView11"
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" QUANTITY "
-            android:id="@+id/dessertQuantityTextView"
-            android:layout_row="16"
-            android:layout_column="1"
-            android:layout_weight="0.7"
-            android:textStyle="bold"
-            android:gravity="center" />
+            android:text="QUANTITY"
+            android:id="@+id/textView12"
+            android:layout_weight="1"
+            android:gravity="right" />
     </TableRow>
 
-    <TableRow
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ebe5e5"
         android:layout_weight="1">
 
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/dessertSpinner"
-            android:layout_column="0"
-            android:layout_weight="0.3"
-            android:layout_gravity="center_vertical"
-            android:background="#f97d77" />
+            android:layout_weight="0.3" />
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/dessertQtyEditText"
-            android:layout_row="17"
-            android:layout_column="1"
-            android:text="x2"
-            android:layout_weight="0.7"
-            android:textStyle="italic"
-            android:layout_gravity="center_vertical"
-            android:background="#fcecd6"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_horizontal"
-            android:layout_marginRight="10dp"
-            android:inputType="numberDecimal" />
-    </TableRow>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ebe5e5"
         android:layout_weight="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="NOTES"
-            android:id="@+id/notesTextView"
-            android:layout_row="18"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:layout_column="0"
-            android:gravity="center" />
-
+            android:id="@+id/textView13" />
     </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/notesEditText"
+            android:layout_weight="1"
+            android:background="#ffd900" />
+    </LinearLayout>
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <EditText
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/notesEditText"
-            android:hint="Enter notes.."
-            android:background="#ffd900"
-            android:layout_row="19"
-            android:layout_column="0" />
+            android:text="START ORDER"
+            android:id="@+id/startOrderButton"
+            android:onClick="startOrder"
+            android:layout_weight="1" />
     </TableRow>
 
     <TableRow
@@ -397,14 +367,27 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SUBMIT"
+            android:text="COMPLETE ORDER"
+            android:id="@+id/completeOrderButton"
+            android:onClick="completeOrder"
+            android:layout_weight="1" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UPDATE"
             android:id="@+id/submitButton"
             android:onClick="submitOrder"
-            android:layout_column="0"
             android:layout_weight="1" />
-
 
     </TableRow>
 
-
 </TableLayout>
+</ScrollView>
+
