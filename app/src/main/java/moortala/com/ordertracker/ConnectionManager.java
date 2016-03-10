@@ -90,6 +90,20 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
         dialog =  dialog.show(contxt, "Processing...", "<><><>");*/
     }
 
+    public ConnectionManager(Callback callbck) {
+
+  //      msg = new Messages(contxt);
+
+        this.callback = callbck;
+      /*  dialog = new ProgressDialog(contxt);
+        // progressDialog.setTitle("Processing...");
+        //  progressDialog.setMessage("Please wait.");
+        dialog.setCancelable(true);
+        dialog.setIndeterminate(true);
+        dialog =  dialog.show(contxt, "Processing...", "<><><>");*/
+    }
+
+
 
     //get the connection
     public static URLConnection getConnection() {
@@ -147,7 +161,11 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
         System.out.println("on pre excecute");
-        msg.displayProgressDialog("", "loading...");
+        try {
+            msg.displayProgressDialog("", "loading...");
+        } catch (Exception e) {
+          //  e.printStackTrace();
+        }
     }
 
     @Override
@@ -206,7 +224,11 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
           dialog.dismiss();
         }*/
 
-        msg.dismissProgressDialog();
+        try {
+            msg.dismissProgressDialog();
+        } catch (Exception e) {
+          //  e.printStackTrace();
+        }
 
 
      /*   try {

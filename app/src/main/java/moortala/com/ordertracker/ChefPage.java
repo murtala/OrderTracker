@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.CheckedInputStream;
 
 public class ChefPage extends AppCompatActivity {
 
@@ -101,6 +102,7 @@ public class ChefPage extends AppCompatActivity {
     private ArrayList<Integer> newOrders;
     private int inProgressSize;
     private int inProgressVal;
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -401,7 +403,7 @@ public class ChefPage extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 System.out.println(" status selected = " + parent.getItemAtPosition(position));
-                orderId = position;
+               // orderId = position;
                 listIds.clear();
                 if (position == 9) { //new order radio button
                     //set order status
@@ -476,7 +478,7 @@ public class ChefPage extends AppCompatActivity {
                                     ArrayAdapter<Integer> adp = new ArrayAdapter<Integer>(getApplicationContext(), R.layout.spinner_item, listIds);
                                     //   dataAdapter.setDropDownViewResource(R.layout.spinner_item);
                                     orderDetailsSpinner.setAdapter(adp);
-                                    orderDetailsSpinner.setSelection(orderId);
+                                 //   orderDetailsSpinner.setSelection(orderId);
                                     adp.notifyDataSetChanged();
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -661,7 +663,7 @@ public class ChefPage extends AppCompatActivity {
         orderDetailsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(" item selected = " + parent.getItemAtPosition(position));
+                System.out.println(" detail item selected = " + parent.getItemAtPosition(position));
                 orderId = (Integer) parent.getItemAtPosition(position);
 
 
@@ -789,9 +791,6 @@ public class ChefPage extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
     @Override
@@ -825,9 +824,6 @@ public class ChefPage extends AppCompatActivity {
     }
 
     public void submitOrder(View view) {
-
-
-
 
         //get data from the inputs
         //get table number
@@ -896,8 +892,8 @@ public class ChefPage extends AppCompatActivity {
             case 1:  //view an order
                 try {
                     msg = new Messages(ChefPage.this);
-                    orderNumber = orderId;
-                    url = new URL("http://moortala.com/services/capstone/orders/getOrder/"+orderNumber);
+                   // orderNumber = orderId;
+                    url = new URL("http://moortala.com/services/capstone/orders/getOrder/"+orderId);
                     Log.d("URL", url.toString());
                     //connect
 
@@ -985,12 +981,18 @@ public class ChefPage extends AppCompatActivity {
                     notes = ((EditText) findViewById(R.id.notesEditText)).getText().toString();
                     notes = notes.replaceAll("\\s+", "").trim();
                     userName = userNameTextView.getText().toString().replaceAll("\\s+", "").trim();
+                   // orderNumber = orderId;
 
 
-                    orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
+                    Log.d("orderId ", "" + orderId);
+                 //   Log.d("orderDetailsSpinner.getPrompt() ", ""+orderDetailsSpinner.getPrompt());
+
+
+
+                   // orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
                     //http://localhost:8080/capstone/orders/submit?tableNumber=2&meal=12&notes=%27coke%27&status=1&name=bob&deviceId=2w3e4r
                     //http://localhost:8080/capstone/orders/chef/submit?&notes=DONE&status=4&name=thecook&orderNumber=3
-                    url = new URL("http://moortala.com/services/capstone/orders/chef/edit?notes="+notes+"&status="+orderStatus+"&chefName="+userName+"&orderNumber="+orderNumber+ "&userId="+userID);
+                    url = new URL("http://moortala.com/services/capstone/orders/chef/edit?notes="+notes+"&status="+orderStatus+"&chefName="+userName+"&orderNumber="+orderId+ "&userId="+userID);
                     // url = new URL("http://moortala.com/services/capstone/orders/update?orderNumber="+orderNumber+"&tableNumber="+tableNumber+"&meal="+dishNumber+"&notes="+notes+ "&status="+orderStatus+"&name="+"&deviceId=");
                     Log.d("URL", url.toString());
 
@@ -1107,9 +1109,9 @@ public class ChefPage extends AppCompatActivity {
                     userName = userNameTextView.getText().toString().replaceAll("\\s+", "").trim();
 
 
-                    orderNumber = orderId;
+                    //orderNumber = orderId;
                     //http://localhost:8080/capstone/orders/submit?tableNumber=2&meal=12&notes=%27coke%27&status=1&name=bob&deviceId=2w3e4r
-                    url = new URL("http://moortala.com/services/capstone/orders/chef/update?orderNumber="+orderNumber+"&tableNumber="+tableNumber+"&breakfast="+breakfast+"&breakfastQty="+breakfastQty+"&lunch="+lunch+"&lunchQty="+lunchQty+"&dinner="+dinner+"&dinnerQty="+dinnerQty+"&dessert="+dessert+"&dessertQty="+dessertQty+"&notes=CANCELED-"+notes+"&status="+orderStatus+"&chefName="+userName+"&deviceId="+ deviceId);
+                    url = new URL("http://moortala.com/services/capstone/orders/chef/update?orderNumber="+orderId+"&tableNumber="+tableNumber+"&breakfast="+breakfast+"&breakfastQty="+breakfastQty+"&lunch="+lunch+"&lunchQty="+lunchQty+"&dinner="+dinner+"&dinnerQty="+dinnerQty+"&dessert="+dessert+"&dessertQty="+dessertQty+"&notes=CANCELED-"+notes+"&status="+orderStatus+"&chefName="+userName+"&deviceId="+ deviceId);
                     Log.d("URL",url.toString());
                     //connect
 
@@ -1161,9 +1163,9 @@ public class ChefPage extends AppCompatActivity {
                     userName = userNameTextView.getText().toString().replaceAll("\\s+", "").trim();
 
 
-                    orderNumber = orderId;
+                   // orderNumber = orderId;
                     orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
-                    url = new URL("http://moortala.com/services/capstone/orders/chef/complete?notes="+notes+"&status=4&chefName="+userName+"&orderNumber="+orderNumber+"&userId="+userID);
+                    url = new URL("http://moortala.com/services/capstone/orders/chef/complete?notes="+notes+"&status=4&chefName="+userName+"&orderNumber="+orderId+"&userId="+userID);
                     // url = new URL("http://moortala.com/services/capstone/orders/update?orderNumber="+orderNumber+"&tableNumber="+tableNumber+"&meal="+dishNumber+"&notes="+notes+ "&status="+orderStatus+"&name="+"&deviceId=");
                     Log.d("URL",url.toString());
 
@@ -1262,7 +1264,7 @@ public class ChefPage extends AppCompatActivity {
 
             orderNumber = orderId;
             orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
-            url = new URL("http://moortala.com/services/capstone/orders/chef/complete?notes="+notes+"&status=4&chefName="+userName+"&orderNumber="+orderNumber+"&userId="+userID);
+            url = new URL("http://moortala.com/services/capstone/orders/chef/complete?notes="+notes+"&status=4&chefName="+userName+"&orderNumber="+orderId+"&userId="+userID);
             // url = new URL("http://moortala.com/services/capstone/orders/update?orderNumber="+orderNumber+"&tableNumber="+tableNumber+"&meal="+dishNumber+"&notes="+notes+ "&status="+orderStatus+"&name="+"&deviceId=");
             Log.d("URL",url.toString());
 
@@ -1390,7 +1392,7 @@ public class ChefPage extends AppCompatActivity {
             orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
             //http://localhost:8080/capstone/orders/submit?tableNumber=2&meal=12&notes=%27coke%27&status=1&name=bob&deviceId=2w3e4r
             //http://localhost:8080/capstone/orders/chef/submit?&notes=DONE&status=4&name=thecook&orderNumber=3
-            url = new URL("http://moortala.com/services/capstone/orders/chef/edit?notes="+notes+"&status=5"+"&chefName="+userName+"&orderNumber="+orderNumber+ "&userId="+userID);
+            url = new URL("http://moortala.com/services/capstone/orders/chef/edit?notes="+notes+"&status=5"+"&chefName="+userName+"&orderNumber="+orderId+ "&userId="+userID);
             // url = new URL("http://moortala.com/services/capstone/orders/update?orderNumber="+orderNumber+"&tableNumber="+tableNumber+"&meal="+dishNumber+"&notes="+notes+ "&status="+orderStatus+"&name="+"&deviceId=");
             Log.d("URL", url.toString());
 
@@ -1516,8 +1518,8 @@ public class ChefPage extends AppCompatActivity {
         Intent notificationIntent = new Intent(this, OrderNotifier.class);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION_ID, orderId);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        pendingIntent = PendingIntent.getBroadcast(this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + orderId;
         alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
@@ -1528,9 +1530,9 @@ public class ChefPage extends AppCompatActivity {
 
     }
 
-    private Notification getNotification(String content) {
+    public  Notification getNotification(String content) {
         Log.d("getNotification ", "getNotification");
-        Notification noti = new Notification.Builder(this)
+        Notification noti = new Notification.Builder(ChefPage.this)
                 .setContentTitle("ORDER(S) UPDATES")
                 .setContentText(content).setSmallIcon(R.mipmap.ic_launcher).build();
 
