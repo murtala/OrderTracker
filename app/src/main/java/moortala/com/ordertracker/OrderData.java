@@ -99,10 +99,10 @@ public class OrderData {
                     orderStatusString ="NEW";
                     break;
                 case 1://view order
-                    orderStatusString = " - ";
+                    orderStatusString = "VIEW ONLY";
                     break;
                 case 2://edit order
-                    orderStatusString = " - ";
+                    orderStatusString = "UPDATED";
                     break;
                 case 3://cancel order
                     orderStatusString = "CANCELED";
@@ -151,7 +151,7 @@ public class OrderData {
             WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             String macAddress = wm.getConnectionInfo().getMacAddress();
             if (macAddress == null) {
-                macAddress = "No mac/wifi-disabled";
+                macAddress = "Mac_Address_not_found";
             }
         setDevice_id(macAddress);
             return macAddress;

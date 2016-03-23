@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+actor waiter
+actor chef
+
+rectangle OrderApp {
+waiter --(Login)
+waiter -- (New Order)
+waiter -- (View Orders)
+waiter -- (Edit Order)
+waiter --(Cancel Order)
+waiter --(Log out)
+(Login)  -- chef
+(View Orders) -- chef
+(Edit Order)--chef
+(Complete Order) --chef
+(Log out) --chef
+
+}
+@enduml

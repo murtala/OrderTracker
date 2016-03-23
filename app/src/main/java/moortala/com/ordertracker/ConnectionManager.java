@@ -32,15 +32,11 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     private BufferedReader responseString;
     public static JSONObject jsonObject;
     Messages msg;
-    Object Activity;
-    Context loginActivity;
     private static ProgressDialog pd;
     static Activity activity;
-
     boolean running;
     ProgressDialog progressDialog;
     private JSONArray jsonArray;
-
 
     public ConnectionManager(URL url) {
         ConnectionManager.setUrl(url);
@@ -48,66 +44,30 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
 
     public ConnectionManager(Context aContext, URL url) {
         context = aContext;
-     //   Log.d("context",  context.getApplicationContext().toString());
         ConnectionManager.setUrl(url);
     }
-
-
 
     public ConnectionManager(WaiterPage waiterPage, URL url) {
         msg = new Messages(waiterPage);
-
-       // this.callback = callbck;
         ConnectionManager.setUrl(url);
-
     }
-
-
-  /* public ConnectionManager(Activity anActivity, URL url) {
-        ConnectionManager.setUrl(url);
-
-       dialog = new ProgressDialog(anActivity);
-       // activity=anActivity;
-
-      //  msg = new Messages(activity);
-     //   msg.displayProgressDialog(anActivity,"ooooooooooo");
-    }
-
-    public ConnectionManager(Callback callback) {
-
-    }*/
 
     public ConnectionManager(Context contxt, Callback callbck) {
-
        msg = new Messages(contxt);
-
         this.callback = callbck;
-      /*  dialog = new ProgressDialog(contxt);
-        // progressDialog.setTitle("Processing...");
-        //  progressDialog.setMessage("Please wait.");
-        dialog.setCancelable(true);
-        dialog.setIndeterminate(true);
-        dialog =  dialog.show(contxt, "Processing...", "<><><>");*/
     }
 
     public ConnectionManager(Callback callbck) {
-
-  //      msg = new Messages(contxt);
-
         this.callback = callbck;
-      /*  dialog = new ProgressDialog(contxt);
-        // progressDialog.setTitle("Processing...");
-        //  progressDialog.setMessage("Please wait.");
-        dialog.setCancelable(true);
-        dialog.setIndeterminate(true);
-        dialog =  dialog.show(contxt, "Processing...", "<><><>");*/
     }
-
-
 
     //get the connection
     public static URLConnection getConnection() {
         return connection;
+    }
+
+    public ConnectionManager(Activity activity) {
+        dialog = new ProgressDialog(activity);
     }
 
     //sets the connection
@@ -181,11 +141,7 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
             while ((line = reader.readLine()) != null) {
                 builder.append(line);
             }
-            Log.d("in bg - string data" , builder.toString());
-          //  setJsonArray( new JSONArray(builder.toString()));
-        //    String dd = builder.toString();
-           // jsonObject = new JSONObject(builder.toString());
-         //   System.out.println("in background");
+            Log.d("in bg - string data", builder.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -195,57 +151,17 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     @Override
     protected void onPostExecute(String string) {
 
-
-
-
-       // OrderData od = new OrderData(this);
-        //  OrderData.getOrder.getOrderStatus();
-      //  od.getOrderStatus();
-   //     pd.dismiss();
-       /* try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-     //   msg.dismissProgressDialog();
-    /*    if (dialog.isShowing()) {
-            dialog.dismiss();
-        }*/
-
-       // Log.d("Connection completed", "++++++");
         super.onPostExecute(string);
 
         System.out.println("in onPostExecute");
 
         callback.run(string);
 
-    /*    if (dialog.isShowing()) {
-           System.out.println("dismissing the dialog");
-          dialog.dismiss();
-        }*/
-
         try {
             msg.dismissProgressDialog();
         } catch (Exception e) {
           //  e.printStackTrace();
         }
-
-
-     /*   try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-
-        if(msg.getProgressDialog() != null && msg.getProgressDialog().isShowing())
-        {
-            msg.getProgressDialog().dismiss();
-        }*/
-
-
-     //   msg.dismissProgressDialog();
     }
 
     public static JSONObject getJsonObject() {
@@ -255,12 +171,6 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
     public static void setJsonObject(JSONObject jsonObject) {
         ConnectionManager.jsonObject = jsonObject;
     }
-
-
-    public ConnectionManager(Activity activity) {
-        dialog = new ProgressDialog(activity);
-    }
-
 
     public JSONArray getJsonArray() {
         return jsonArray;

@@ -32,6 +32,9 @@ public class OrderNotifier extends BroadcastReceiver {
     private Notification notification1;
     private ArrayList<Integer> inProgressOrders;
     private ArrayList<Integer> completedOrders;
+    private Notification notification3;
+    private Notification notification4;
+    private Notification notification2;
 
     @Override
     public void onReceive(final Context contxt, Intent intent) {
@@ -40,46 +43,34 @@ public class OrderNotifier extends BroadcastReceiver {
         notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notification = intent.getParcelableExtra(NOTIFICATION);
         final int id = intent.getIntExtra(NOTIFICATION_ID, 0);
-
-
-
         updatedOrders =new ArrayList<Integer>();;
         newOrders =new ArrayList<Integer>();;
         inProgressOrders =new ArrayList<Integer>();;
         completedOrders =new ArrayList<Integer>();;
-
-        
-     //   int  id = (int)System.currentTimeMillis();
-
-       switch (id){
-           case 1:
-               break;
-           case 2:
-               break;
-           case 3: //updated orders
-               break;
-           case 4:
-               break;
-       }
-
-
-
-
-
-        ///////////////////////
-
-
-
         //start the notifier service
         //load data from server for orders in progress
         try {
-            //  url = new URL("http://www.moortala.com/services/capstone/orders");
-            url = new URL("http://moortala.com/services/capstone/orders/findNewAndUpdatedOrders");
+            switch (id){
+                case 1://started
+                    url = new URL("http://moortala.com/services/capstone/orders/findCurrentAndCompletedOrders");
+                    break;
+                case 2://completed
+                    url = new URL("http://moortala.com/services/capstone/orders/findCurrentAndCompletedOrders");
+                    break;
+                case 3: //updated orders
+                    url = new URL("http://moortala.com/services/capstone/orders/findCurrentOrders");
+                    break;
+                case 4://new orders
+                    url = new URL("http://moortala.com/services/capstone/orders/findNewAndUpdatedOrders");
+                    break;
+                case 5://canceled orders
+                    url = new URL("http://moortala.com/services/capstone/orders/findCanceledOrders");
+                    break;
+            }
+
 
           //  Log.d("URL", url.toString());
             //connect
-            //  cm = new ConnectionManager(url);
-            //  jsonArray = new JSONArray(cm.execute(url).get());
             ConnectionManager   cm1 = new ConnectionManager(new Callback() {
                 @Override
                 public void run(Object result) {
@@ -93,25 +84,29 @@ public class OrderNotifier extends BroadcastReceiver {
                         //get the list of all the order ids
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonobj = jsonArray.getJSONObject(i);
-                            //insert the list to the spinner
-                            //    listIds.add(jsonobj.getInt("id"));
-
-
                             //get in progress orders
                             if (jsonobj.getInt("status") ==2){
                                 updatedOrders.add(jsonobj.getInt("id"));
+                                Log.d("updatedOrders", "" + updatedOrders.toString());
                             }
                             //get completed orders
                             if (jsonobj.getInt("status") ==0){
                                 newOrders.add(jsonobj.getInt("id"));
+                                Log.d("newOrders", "" + newOrders.toString());
                             }
 
-
+                            //get in progress orders
+                            if (jsonobj.getInt("status") ==5){
+                                inProgressOrders.add(jsonobj.getInt("id"));
+                                Log.d("inProgressOrders", ""+ inProgressOrders.toString());
+                            }
+                            //get completed orders
+                            if (jsonobj.getInt("status") ==4){
+                                completedOrders.add(jsonobj.getInt("id"));
+                                Log.d("completedOrders", "" + completedOrders.toString());
+                            }
                         }
 
-                        Log.d("updatedOrders", "" + updatedOrders.toString());
-                        Log.d("newOrders", "" + newOrders.toString());
-                        //    Log.d("listIds = ", listIds.toString());
                         inProgressSize = jsonArray.length();
 
                         if (inProgressSize > inProgressVal){
@@ -124,50 +119,46 @@ public class OrderNotifier extends BroadcastReceiver {
                             if (updatedOrders.isEmpty()){
 
                             }else{
-                                Log.d("PupdatedOrders ", "PupdatedOrders");
-                           //     scheduleNotification(getNotification("Order(s) " + updatedOrders.toString() + " updated"), 3, alarmManager);
-                         //     notification = new ChefPage().getNotification("Order(s) " + updatedOrders.toString() + " updated");
-                                notification = new Notification.Builder(context)
-                                        .setContentTitle("ORDER(S) UPDATES")
-                                        .setContentText("Order(s) " + updatedOrders.toString() + " updated").setSmallIcon(R.mipmap.ic_launcher).build();
-
-
-                                Log.d("PupdatedOrders2 ", "PupdatedOrders2");
-                                //update the data
-                            //    Log.d("id", "" + id);
-                                notificationManager.notify(3, notification);
+                                notification3 = new Notification.Builder(context)
+                                        .setContentTitle("ORDER(S) STATUS")
+                                        .setContentText("Updated:" + updatedOrders.toString()).setSmallIcon(R.mipmap.ic_launcher).build();
+                                notificationManager.notify(3, notification3);
 
                             }
                             if (newOrders.isEmpty()){
 
                             }else{
-                                Log.d("PnewOrders ", "PnewOrders");
-
-
-                             //   notification = new ChefPage().getNotification("Order(s) " + newOrders.toString() + " updated");
-
-                                //   scheduleNotification(getNotification("New order(s) " + newOrders.toString()), 4, alarmManager2);
-
-                                notification1 = new Notification.Builder(context)
-                                        .setContentTitle("ORDER(S) UPDATES")
-                                        .setContentText("New order(s) " + newOrders.toString()).setSmallIcon(R.mipmap.ic_launcher).build();
-
-
-                                Log.d("PnewOrders2 ", "PnewOrders2");
-                                //update the data
-                              //  Log.d("id", "" + id);
-                                notificationManager.notify(4, notification1);
+                                notification4 = new Notification.Builder(context)
+                                        .setContentTitle("ORDER(S) STATUS")
+                                        .setContentText("New:" + newOrders.toString()).setSmallIcon(R.mipmap.ic_launcher).build();
+                                notificationManager.notify(4, notification4);
                             }
 
-                        }
+                            if (inProgressOrders.isEmpty()){
 
+                            }else{
+                                notification1 = new Notification.Builder(context)
+                                        .setContentTitle("ORDER(S) STATUS")
+                                        .setContentText("In Progress:" + inProgressOrders.toString()).setSmallIcon(R.mipmap.ic_launcher).build();
+                                notificationManager.notify(1, notification1);
+                            }
+
+                            if (completedOrders.isEmpty()){
+
+                            }else{
+                                  notification2 = new Notification.Builder(context)
+                                        .setContentTitle("ORDER(S) STATUS")
+                                        .setContentText("DONE:" + completedOrders.toString()).setSmallIcon(R.mipmap.ic_launcher).build();
+                                notificationManager.notify(2, notification2);
+                            }
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     newOrders.clear();
                     updatedOrders.clear();
-
-
+                    inProgressOrders.clear();
+                    completedOrders.clear();
                 }
             });
             cm1.execute(url);
@@ -176,11 +167,5 @@ public class OrderNotifier extends BroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //////////////////////
-
-
     }
-
-
 }

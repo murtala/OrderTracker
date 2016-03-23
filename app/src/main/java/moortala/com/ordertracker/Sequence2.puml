@@ -1,0 +1,82 @@
+@startuml
+title Order Friendly App Sequence Diagram
+
+
+alt Create New Order
+Waiter -> OrderFriendlyApp:Submit New Order
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+Waiter <- OrderFriendlyApp:Display Message
+OrderFriendlyApp -> Chef:Display Notification
+
+alt Start Order
+OrderFriendlyApp <- Chef:Start Order
+activate Server
+OrderFriendlyApp -> Server:Update Order Status
+OrderFriendlyApp <- Server:Send Response
+deactivate Server
+OrderFriendlyApp -> Chef:Display Confirmation Message
+OrderFriendlyApp -> Waiter:Display Notification
+else Edit Order
+OrderFriendlyApp <- Chef:Edit Order
+activate Server
+OrderFriendlyApp -> Server:Update Order Status
+OrderFriendlyApp <- Server:Send Response
+deactivate Server
+OrderFriendlyApp -> Chef:Display Confirmation Message
+OrderFriendlyApp -> Waiter:Display Notification
+else Complete Order
+OrderFriendlyApp <- Chef:Complete Order
+activate Server
+OrderFriendlyApp -> Server:Update Order Status
+OrderFriendlyApp <- Server:Send Response
+deactivate Server
+OrderFriendlyApp -> Chef:Display Confirmation Message
+OrderFriendlyApp -> Waiter:Display Notification
+end
+else View Orders
+alt View New Orders
+Waiter -> OrderFriendlyApp:View New Orders
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+Waiter <- OrderFriendlyApp:Display Message
+else View Orders In Progress
+Waiter -> OrderFriendlyApp:View Orders In Progress
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+Waiter <- OrderFriendlyApp:Display Message
+else View Completed Orders
+Waiter -> OrderFriendlyApp:View Completed Orders
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+Waiter <- OrderFriendlyApp:Display Message
+
+end
+else Edit Orders
+Waiter -> OrderFriendlyApp:Edit Orders
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+OrderFriendlyApp -> Chef:Display Notification
+OrderFriendlyApp -> Waiter:Display Confirmation Message
+
+else Cancel Order
+Waiter -> OrderFriendlyApp:Cancel Order
+OrderFriendlyApp -> Server:Send Request
+activate Server
+OrderFriendlyApp <-- Server:Send Response
+deactivate Server
+OrderFriendlyApp -> Waiter:Display Confirmation Message
+end
+
+
+@enduml

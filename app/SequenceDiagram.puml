@@ -1,0 +1,37 @@
+@startuml
+title Order Friendly App Waiter Sequence Diagram
+
+Waiter ->OrderFriendlyApp: Register
+OrderFriendlyApp ->Server: Send Request
+activate Server
+OrderFriendlyApp <-- Server:User Registered Response
+Waiter <-- OrderFriendlyApp:Confirmation Response
+deactivate Server
+
+
+Waiter -> OrderFriendlyApp: Login
+OrderFriendlyApp -> Server: Login Request
+activate Server
+alt valid login
+OrderFriendlyApp <-- Server:Authentication Accepted
+Waiter <-- OrderFriendlyApp:Display Message
+else Invalid login
+OrderFriendlyApp <-- Server:Authentication Refused
+deactivate Server
+Waiter <-- OrderFriendlyApp:Display Message
+end
+
+
+
+
+Waiter -> Server:Submit New order Request
+activate Server
+OrderFriendlyApp <-- Server:Send Confirmation
+deactivate Server
+Waiter <- OrderFriendlyApp:Display Message
+OrderFriendlyApp -> Chef:Display notification
+Server <- Chef:Start Order and time track
+OrderFriendlyApp <- Server:Update Order Status
+Waiter <- OrderFriendlyApp: Display notification
+
+@enduml
