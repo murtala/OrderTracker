@@ -109,7 +109,6 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
         //getInputStream();
 
         BufferedReader responseString = new BufferedReader(new InputStreamReader(getInputStream()));
-      //  Log.d("responseString",  responseString.toString());
         return responseString;
     }
 
@@ -150,13 +149,9 @@ public class ConnectionManager extends AsyncTask<URL, Void, String> {
 
     @Override
     protected void onPostExecute(String string) {
-
         super.onPostExecute(string);
-
         System.out.println("in onPostExecute");
-
         callback.run(string);
-
         try {
             msg.dismissProgressDialog();
         } catch (Exception e) {

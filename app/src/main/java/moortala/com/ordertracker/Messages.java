@@ -45,29 +45,13 @@ public class Messages {
         toast.show();
     }
 
-    public  void displayProgressDialog(String message) {
+    public void displayProgressDialog(String message) {
 
 
         progressDialog = new ProgressDialog(context);
-         // progressDialog.setTitle("Processing...");
-        //  progressDialog.setMessage("Please wait.");
-         progressDialog.setCancelable(true);
+        progressDialog.setCancelable(true);
         progressDialog.setIndeterminate(true);
-        progressDialog =  progressDialog.show(context, "Processing...", message);
-
-
-      /*  try {
-            progressDialog = new ProgressDialog((Context) theClass.newInstance());
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        progressDialog.setTitle("Processing...");
-        progressDialog.setMessage("Please wait.");
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();*/
+        progressDialog = progressDialog.show(context, "Processing...", message);
     }
 
     public void dismissProgressDialog() {
@@ -75,13 +59,11 @@ public class Messages {
     }
 
     public void displayDialog(String message, String title) {
-
         progressDialog = new ProgressDialog(context);
-        //progressDialog.setTitle("Processing...");
         progressDialog.setMessage(message);
         progressDialog.setCancelable(true);
         progressDialog.setIndeterminate(true);
-        progressDialog =  progressDialog.show(context, title, message);
+        progressDialog = progressDialog.show(context, title, message);
     }
 
     public boolean isDialogConfirmed() {
@@ -92,38 +74,18 @@ public class Messages {
         this.dialogConfirmed = dialogConfirmed;
     }
 
-    public  void displayProgressDialog(String title, String message) {
+    public void displayProgressDialog(String title, String message) {
         progressDialog = new ProgressDialog(context);
-        // progressDialog.setTitle("Processing...");
-        //  progressDialog.setMessage("Please wait.");
         progressDialog.setCancelable(true);
         progressDialog.setIndeterminate(true);
-        progressDialog =  progressDialog.show(context, title, message);
-
-
-      /*  try {
-            progressDialog = new ProgressDialog((Context) theClass.newInstance());
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        progressDialog.setTitle("Processing...");
-        progressDialog.setMessage("Please wait.");
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();*/
+        progressDialog = progressDialog.show(context, title, message);
     }
-
 
 
     public void displayProgressDialog(Context waiterPage, String message) {
-
-     //   Log.d("dilog1", progressDialog.getOwnerActivity().getCallingActivity().getClassName().toString());
-      //  progressDialog =  progressDialog.show();
     }
 
     public void dismissProgressDialog(Context aContext) {
-            Log.d("dilog", progressDialog.getOwnerActivity().getCallingActivity().getClassName().toString());
+        Log.d("dialog", progressDialog.getOwnerActivity().getCallingActivity().getClassName().toString());
     }
 }

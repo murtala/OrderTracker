@@ -50,11 +50,10 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private JSONObject jsonObject;
-
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "waiter:password", "chef:password"
     };
+    private JSONObject jsonObject;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -149,16 +148,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // There was an error; don't attempt login and focus the first form field with an error.
             focusView.requestFocus();
             //msg.dismissProgressDialog();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            // Show a progress spinner, and kick off a background task to perform the user login attempt.
 
             //determine if the user is waiter of chef
-
             if (userType == 0) { //waiter
                 try {
                     url = new URL("http://moortala.com/services/capstone/users/findUser/" + email);
@@ -177,8 +173,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // set up url
             //get user details from server
-
-            //  ConnectionManager cm = new ConnectionManager(this,url);
             //String user =null;
             cm = new ConnectionManager(LoginActivity.this, new Callback() {
                 @Override
@@ -224,7 +218,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 e.printStackTrace();
                             }
                             //get user details from server
-
                             cm = new ConnectionManager(LoginActivity.this, new Callback() {
                                 @Override
                                 public void run(Object result) {
@@ -265,8 +258,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
       /*  if (mAuthTask != null) {
             return;
         }*/
-
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -297,12 +288,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
+            // There was an error; don't attempt login and focus the first form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
+            // Show a progress spinner, and kick off a background task to perform the user login attempt.
 
             try {
                 url = new URL("http://moortala.com/services/capstone/users/findUser/" + email);
@@ -406,7 +395,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-         //   emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            //   emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
 
@@ -443,8 +432,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     userType = 1;
                 break;
         }
-
-
     }
 
     /**
@@ -463,8 +450,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+            // attempt authentication against a network service.
 
             // get the credentials by accessing network
             //if name is null then it does not exist. other wise, prompt to choose another name
@@ -477,8 +463,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
-            // TODO: register the new account here.
-            //true will alwys go
+            // register the new account here.
+            //true will alwys go and log in
             return false;
         }
 

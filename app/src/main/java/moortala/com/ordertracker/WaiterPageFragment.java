@@ -13,7 +13,6 @@ public class WaiterPageFragment extends Fragment {
 
     public WaiterPageFragment() {
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

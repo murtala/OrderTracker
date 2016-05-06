@@ -1,0 +1,23 @@
+@startuml
+title Book Catalog Management Application
+user -> Application:check in
+Application -> Database: save
+activate Database
+Application <-- Database: confirmation
+deactivate Database
+user <-- Application:confirmation
+
+user -> Application:check out
+Application -> Database: save
+activate Database
+Application <-- Database: confirmation
+deactivate Database
+user <-- Application:confirmation
+
+staff -> Application:Search
+Application -> Database: locate book name or id
+activate Database
+Application <-- Database: results
+deactivate Database
+Application -> staff:display Results
+@enduml

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,19 +22,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WaiterPage extends AppCompatActivity {
+    private static URL url;
     private int orderStatus;
     private int tableNumber;
     private EditText tableNumberTextField;
     private String notes;
-    private static URL url;
     private int orderNumber;
     private String userName;
     private String deviceId;
@@ -55,7 +58,6 @@ public class WaiterPage extends AppCompatActivity {
     private Spinner dessertSpinner;
     private EditText dessertQtyEditText;
     private Button submitButton;
-    private Button clearButton;
     private String[] actions;
     private String[] breakfasts;
     private String[] lunches;
@@ -81,32 +83,35 @@ public class WaiterPage extends AppCompatActivity {
 
 
     @Override
-    protected void onResume() {
+    protected void onResume() { //called when the activity resumes
         super.onResume();
 
-        try {
-            //initiate variables
+        try {//instantiate variables
             orderStatusTextView = (TextView) findViewById(R.id.orderStatusTextView);
             listIds = new ArrayList<>();
             timeTakenTextView = (TextView) findViewById(R.id.timeTakenTextView);
-
-            //get the user name from the login activity
-            userNameTextView.setText(getIntent().getStringExtra("user"));
+            userNameTextView.setText(getIntent().getStringExtra("user")); //get the user name from the login activity
             userName = getIntent().getStringExtra("user");
             userID = getIntent().getLongExtra("user_id", 0);
-
-            //arraylists for the notification service variables
+            //array lists for the notification service variables
             inProgressOrders = new ArrayList<>();
             completedOrders = new ArrayList<>();
             updatedOrders = new ArrayList<>();
 
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
 
-        //start the notifier service on resume
+
+
+
+
+
+        // new Handler().postDelayed(runnable, TimeUnit.SECONDS.toMillis(1));
+
+        //start the notifier service
         try {
-            url = new URL("http://moortala.com/services/capstone/orders/findCurrentOrders");
+            url = new URL("http://moortala.com/services/capstone/orders");
             //connect to server and get json data
             ConnectionManager cm1 = new ConnectionManager(WaiterPage.this, new Callback() {
                 @Override
@@ -115,39 +120,39 @@ public class WaiterPage extends AppCompatActivity {
                         jsonArray = new JSONArray(result.toString());
                         Log.d("jsonArray = ", jsonArray.toString());
                         //get the list of all the order ids
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonobj = jsonArray.getJSONObject(i);
+                        for (int i = 0; i < jsonArray.length(); i++) { // statuses : 0  - new / 1 - view/ 2 - edit/ 3 - cancel/ 4 - complete / 5 - in progress
+                            JSONObject jsonObj = jsonArray.getJSONObject(i);
                             //get in progress orders
-                            if (jsonobj.getInt("status") == 5) {
-                                inProgressOrders.add(jsonobj.getInt("id"));
+                            if (jsonObj.getInt("status") == 5) {
+                                inProgressOrders.add(jsonObj.getInt("id"));
                             }
                             //get completed orders
-                            if (jsonobj.getInt("status") == 4) {
-                                completedOrders.add(jsonobj.getInt("id"));
+                            if (jsonObj.getInt("status") == 4) {
+                                completedOrders.add(jsonObj.getInt("id"));
                             }
                             //get edited orders
-                            if (jsonobj.getInt("status") == 2) {
-                                updatedOrders.add(jsonobj.getInt("id"));
+                            if (jsonObj.getInt("status") == 2) {
+                                updatedOrders.add(jsonObj.getInt("id"));
                             }
                         }
 
+                        //check previous and new values in order to display notification in case of any changes in the values
                         inProgressSize = jsonArray.length();
-
-                        //check previous and new values in order to display notification
                         if (inProgressSize > inProgressVal) {
                             inProgressVal = inProgressSize; //keep old value
-
+                            // instantiate alarm managers
                             AlarmManager alarmManager = null;
                             AlarmManager alarmManager2 = null;
                             AlarmManager alarmManager3 = null;
-                            scheduleNotification(getNotification("Order(s) " + inProgressOrders.toString() + " started"), 1, alarmManager);
-                            scheduleNotification(getNotification("Order(s) " + completedOrders.toString() + " completed"), 2, alarmManager2);
+                            //call the function to initiate the scheduler
+
+                            scheduleNotification(getNotification("In Progress " + inProgressOrders.toString()), 6, alarmManager);
+                            scheduleNotification(getNotification("Order(s) " + completedOrders.toString() + " completed"), 5, alarmManager2);
                             scheduleNotification(getNotification("Order(s) " + updatedOrders.toString() + " updated"), 3, alarmManager3);
 
-                        } else {
+                        } else { // display nothing
                             AlarmManager alarmManager4 = null;
-                            scheduleNotification(getNotification(""), 1, alarmManager4);
-                            //update the data
+                            scheduleNotification(getNotification(""), 8, alarmManager4);
                         }
 
                     } catch (Exception e) {
@@ -155,7 +160,7 @@ public class WaiterPage extends AppCompatActivity {
                     }
                 }
             });
-            cm1.execute(url);
+            cm1.execute(url); //execute the connection manager function
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,12 +170,15 @@ public class WaiterPage extends AppCompatActivity {
         orderActionsSpinner.setAdapter(statusesAdapter);
         statusesAdapter.notifyDataSetChanged();
 
+        //reset the spinner to default value
+        orderActionsSpinner.setSelection(7);
+
         //listen to the actions spinner for changes
         orderActionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 orderId = position;
-                Log.d("action selected = ", (String) parent.getItemAtPosition(position));
+                Log.d("action selected = ", (String) parent.getItemAtPosition(position) + "ID: "+orderId);
                 orderStatus = orderId;
 
                 //disable the submit button when one is viewing: new, in progress and completed orders
@@ -234,7 +242,7 @@ public class WaiterPage extends AppCompatActivity {
                     dessertQtyEditText.setEnabled(false);
                     //enable notes
                     notesEditText.setEnabled(false);
-                    //load data from server
+                    //load data for orders with status 0 (new)
                     try {
                         url = new URL("http://www.moortala.com/services/capstone/orders/findByStatus/0/" + userID);
                         Log.d("URL-Actions-View_new:", url.toString());
@@ -252,7 +260,6 @@ public class WaiterPage extends AppCompatActivity {
                                         //insert the list to the spinner
                                         listIds.add(jsonobj.getInt("id"));
                                     }
-                                    Log.d("IDS:Viewable_orders= ", listIds.toString());
                                     ArrayAdapter<Integer> adp = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, listIds);
                                     orderDetailsSpinner.setAdapter(adp);
                                     orderDetailsSpinner.setSelection(orderId);
@@ -295,9 +302,9 @@ public class WaiterPage extends AppCompatActivity {
                     dessertQtyEditText.setEnabled(false);
                     //enable notes
                     notesEditText.setEnabled(false);
-                    //load data from server
+                    //load data for orders with status 5 (in progress)
                     try {
-                        url = new URL("http://www.moortala.com/services/capstone/orders/findByStatus/5/" + userID);
+                        url = new URL("http://www.moortala.com/services/capstone/orders/findInProgressOrders/" + userID);
                         Log.d("URL-Actions-View_prgss:", url.toString());
                         //connect
                         cm = new ConnectionManager(WaiterPage.this, new Callback() {
@@ -313,7 +320,6 @@ public class WaiterPage extends AppCompatActivity {
                                         //insert the list to the spinner
                                         listIds.add(jsonobj.getInt("id"));
                                     }
-                                    Log.d("IDS:In_Prgs_orders = ", listIds.toString());
                                     ArrayAdapter<Integer> adp = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, listIds);
                                     orderDetailsSpinner.setAdapter(adp);
                                     orderDetailsSpinner.setSelection(orderId);
@@ -355,7 +361,7 @@ public class WaiterPage extends AppCompatActivity {
                     dessertQtyEditText.setEnabled(false);
                     //enable notes
                     notesEditText.setEnabled(false);
-                    //load data from server
+                    //load data  for orders with status 4
                     try {
                         url = new URL("http://www.moortala.com/services/capstone/orders/findCompletedOrders/4/" + userID);
                         Log.d("URL-Actions-View_comp:", url.toString());
@@ -388,7 +394,78 @@ public class WaiterPage extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                } else if (position == 4) { //edit order is selected
+                   /* actions[0] = "NEW ORDER";
+                    actions[1] = "VIEW NEW ORDERS";
+                    actions[2] = "VIEW IN PROGRESS";
+                    actions[3] = "VIEW COMPLETED";
+                    actions[4] = "VIEW UPDATED";
+                    actions[5] = "EDIT ORDER";
+                    actions[6] = "CANCEL ORDER";
+                    actions[7] = "----------";*/
+
+                }
+
+
+                else if (position == 4) { //view edited orders
+                    //clear the list of order details numbers
+                    listIds.clear();
+                    //clear the status display message
+                    orderStatusTextView.setText("");
+                    //clear time
+                    timeTakenTextView.setText("");
+                    //set order status
+                    orderStatus = 3;
+                    //disable spinner
+                    orderDetailsSpinner.setEnabled(true);
+                    orderDetailsSpinner.setVisibility(View.VISIBLE);
+                    //enable other fields
+                    tableNumberTextField.setEnabled(false);
+                    // enable meal selections
+                    breakfastSpinner.setEnabled(false);
+                    lunchSpinner.setEnabled(false);
+                    dinnerSpinner.setEnabled(false);
+                    dessertSpinner.setEnabled(false);
+                    //enable meal quantities
+                    breakfastQtyEditText.setEnabled(false);
+                    lunchQtyEditText.setEnabled(false);
+                    dinnerQtyEditText.setEnabled(false);
+                    dessertQtyEditText.setEnabled(false);
+                    //enable notes
+                    notesEditText.setEnabled(false);
+                    //load data  for orders with status 4
+                    try {
+                        url = new URL("http://www.moortala.com/services/capstone/orders/findByStatus/2/" + userID);
+                        Log.d("URL-Actions-View_edits:", url.toString());
+                        //connect
+                        cm = new ConnectionManager(WaiterPage.this, new Callback() {
+                            @Override
+                            public void run(Object result) {
+                                try {
+                                    jsonArray = new JSONArray(result.toString());
+                                    Log.d("jsonArray = ", jsonArray.toString());
+                                    //get the list of all the order ids
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonobj = jsonArray.getJSONObject(i);
+                                        //insert the list to the spinner
+                                        listIds.add(jsonobj.getInt("id"));
+                                    }
+                                    Log.d("IDS:edited_orders= ", listIds.toString());
+                                    ArrayAdapter<Integer> adp = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, listIds);
+                                    orderDetailsSpinner.setAdapter(adp);
+                                    orderDetailsSpinner.setSelection(orderId);
+                                    adp.notifyDataSetChanged();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        cm.execute(url);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (position == 5) { //edit order is selected
                     //set order status
                     orderStatus = 4;
                     //disable spinner
@@ -409,9 +486,9 @@ public class WaiterPage extends AppCompatActivity {
                     //enable notes
                     notesEditText.setEnabled(true);
 
-                } else if (position == 5) {//cancel order is selected
+                } else if (position == 6) {//cancel order is selected
                     //set order status
-                    orderStatus = 5;
+                    orderStatus = 3;
                     //disable spinner
                     orderDetailsSpinner.setEnabled(true);
                     orderDetailsSpinner.setVisibility(View.VISIBLE);
@@ -514,8 +591,9 @@ public class WaiterPage extends AppCompatActivity {
         orderDetailsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("selected detail= " , "" + parent.getItemAtPosition(position));
                 orderId = (Integer) parent.getItemAtPosition(position);
+                Log.d("selected detail= ", "" + parent.getItemAtPosition(position) + "ID: "+orderId);
+
                 ///display selected order
                 try {
                     msg = new Messages(WaiterPage.this);
@@ -553,7 +631,7 @@ public class WaiterPage extends AppCompatActivity {
                                 } else {
                                     timeTakenTextView = (TextView) findViewById(R.id.timeTakenTextView);
                                     long minutes = (int) (((od.getEnd_time() - od.getStart_time())));
-                                   // long minutes = (int) (((od.getEnd_time() - od.getStart_time()) / 1000));
+                                    // long minutes = (int) (((od.getEnd_time() - od.getStart_time()) / 1000));
                                     timeTakenTextView.setText("" + TimeUnit.MILLISECONDS.toMinutes(minutes));
                                 }
                                 //display status message
@@ -618,20 +696,22 @@ public class WaiterPage extends AppCompatActivity {
         //submit  button
         submitButton = (Button) findViewById(R.id.submitButton);
         //clear button
-        clearButton = (Button) findViewById(R.id.clearButton);
+        Button clearButton = (Button) findViewById(R.id.clearButton);
 
         //set up spinner for order status
-        actions = new String[6];
-        actions[0] = "0 - NEW ORDER";
-        actions[1] = "1 - VIEW NEW ORDERS";
-        actions[2] = "2 - VIEW IN PROGRESS";
-        actions[3] = "3 - VIEW COMPLETED";
-        actions[4] = "4 - EDIT";
-        actions[5] = "5 - CANCEL";
+        actions = new String[8];
+        actions[0] = "NEW ORDER";
+        actions[1] = "VIEW NEW ORDERS";
+        actions[2] = "VIEW IN PROGRESS";
+        actions[3] = "VIEW COMPLETED";
+        actions[4] = "VIEW UPDATED";
+        actions[5] = "EDIT ORDER";
+        actions[6] = "CANCEL ORDER";
+        actions[7] = "----------";
 
         //set up spinner for order breakfast
         breakfasts = new String[6];
-        breakfasts[0] = "0 - Make a selection";
+        breakfasts[0] = "----------";
         breakfasts[1] = "1 - Omelette";
         breakfasts[2] = "2 - Cereals";
         breakfasts[3] = "3 - Pancakes";
@@ -640,7 +720,7 @@ public class WaiterPage extends AppCompatActivity {
 
         //set up spinner for order lunch
         lunches = new String[6];
-        lunches[0] = "0 - Make a selection";
+        lunches[0] = "----------";
         lunches[1] = "1 - Salad";
         lunches[2] = "2 - Lasagna";
         lunches[3] = "3 - Fajitas";
@@ -649,7 +729,7 @@ public class WaiterPage extends AppCompatActivity {
 
         //set up spinner for order dinner
         dinners = new String[6];
-        dinners[0] = "0 - Make a selection";
+        dinners[0] = "----------";
         dinners[1] = "1 - Soup";
         dinners[2] = "2 - French Fries";
         dinners[3] = "3 - Chili";
@@ -658,7 +738,7 @@ public class WaiterPage extends AppCompatActivity {
 
         //set up spinner for order dessert
         desserts = new String[6];
-        desserts[0] = "0 - Make a selection";
+        desserts[0] = "----------";
         desserts[1] = "1 - Cheese Cake";
         desserts[2] = "2 - Sodas";
         desserts[3] = "3 - Chocolate Cake";
@@ -705,6 +785,7 @@ public class WaiterPage extends AppCompatActivity {
         tableNumberTextField = (EditText) findViewById(R.id.tableNumberTextField);
         deviceId = OrderData.getDeviceMacAddress(WaiterPage.this);
 
+        Log.d("orderStatus = " , orderStatus + "");
         //chose an action to perform
         switch (orderStatus) {
             case 0://new order
@@ -770,6 +851,8 @@ public class WaiterPage extends AppCompatActivity {
                                             msg.displayToast(WaiterPage.this, "Order #" + od.getId() + " created");
                                             //reset fields for next order
                                             resetFields();
+                                            //reset the spinner to default value
+                                            orderActionsSpinner.setSelection(7);
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -798,9 +881,69 @@ public class WaiterPage extends AppCompatActivity {
             case 2: //complete an order
                 break;
 
-            case 3:
-                break;
+            case 3://cancel
+                Log.d("Order", "Canceled");
+                try {
 
+                    if (tableNumberTextField.getText().toString() == null || (breakfast == 0 && lunch == 0 && dinner == 0 && dessert == 0)) {
+                        msg = new Messages(WaiterPage.this);
+                        msg.displayToast(WaiterPage.this, "Load order first!");
+                    } else {
+
+                        //get current info from screen
+                        tableNumber = Integer.parseInt(tableNumberTextField.getText().toString());
+                        breakfastQty = Integer.parseInt(breakfastQtyEditText.getText().toString());
+                        lunchQty = Integer.parseInt(lunchQtyEditText.getText().toString());
+                        dinnerQty = Integer.parseInt(dinnerQtyEditText.getText().toString());
+                        dessertQty = Integer.parseInt(dessertQtyEditText.getText().toString());
+                        notes = ((EditText) findViewById(R.id.notesEditText)).getText().toString();
+                        notes = notes.replaceAll("\\s+", "").trim();
+                        userName = userNameTextView.getText().toString().replaceAll("\\s+", "").trim();
+                        orderNumber = orderId;
+                        orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
+                        url = new URL("http://moortala.com/services/capstone/orders/waiter/edit?orderNumber=" + orderNumber + "&tableNumber=" + tableNumber + "&breakfast=" + breakfast + "&breakfastQty=" + breakfastQty + "&lunch=" + lunch + "&lunchQty=" + lunchQty + "&dinner=" + dinner + "&dinnerQty=" + dinnerQty + "&dessert=" + dessert + "&dessertQty=" + dessertQty + "&notes=CANCELED-" + notes + "&status=3&waiterName=" + userName + "&deviceId=" + deviceId + "&userId=" + userID);
+
+                        // Use the Builder class for convenient dialog construction
+                        AlertDialog.Builder builder = new AlertDialog.Builder(WaiterPage.this);
+                        builder.setTitle("CONFIRM ACTION");
+                        builder.setMessage("Cancel order?")
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        cm = new ConnectionManager(WaiterPage.this, new Callback() {
+                                            @Override
+                                            public void run(Object result) {
+                                                try {
+                                                    // jsonArray = new JSONArray(result.toString());
+                                                    //  cm = new ConnectionManager(url);
+                                                    jsonObject = new JSONObject(result.toString());
+                                                    Log.d("jsonObject = ", jsonObject.toString());
+                                                    msg = new Messages(WaiterPage.this);
+                                                    msg.displayToast(WaiterPage.this, "Order Canceled");
+                                                    //reset the spinner to default value
+                                                    orderActionsSpinner.setSelection(7);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        });
+                                        cm.execute(url);
+                                    }
+                                })
+                                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User cancelled the dialog
+                                    }
+                                });
+                        // Create the AlertDialog object and return it
+                        builder.create().show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //display message that it has been canceled
+                break;
             case 4://edit order
                 try {
 
@@ -852,6 +995,8 @@ public class WaiterPage extends AppCompatActivity {
                                                 notesEditText.setText(od.getNotes());
                                                 msg = new Messages(WaiterPage.this);
                                                 msg.displayToast(WaiterPage.this, "Order Updated");
+                                                //reset the spinner to default value
+                                                orderActionsSpinner.setSelection(7);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
@@ -872,69 +1017,10 @@ public class WaiterPage extends AppCompatActivity {
                 }
                 break;
 
-            case 5://cancel
-                try {
-
-                    if (tableNumberTextField.getText().toString() == null|| (breakfast == 0 && lunch == 0 && dinner == 0 && dessert == 0)) {
-                        msg = new Messages(WaiterPage.this);
-                        msg.displayToast(WaiterPage.this, "Load order first!");
-                    } else {
-
-                        //get current info from screen
-                        tableNumber = Integer.parseInt(tableNumberTextField.getText().toString());
-                        breakfastQty = Integer.parseInt(breakfastQtyEditText.getText().toString());
-                        lunchQty = Integer.parseInt(lunchQtyEditText.getText().toString());
-                        dinnerQty = Integer.parseInt(dinnerQtyEditText.getText().toString());
-                        dessertQty = Integer.parseInt(dessertQtyEditText.getText().toString());
-                        notes = ((EditText) findViewById(R.id.notesEditText)).getText().toString();
-                        notes = notes.replaceAll("\\s+", "").trim();
-                        userName = userNameTextView.getText().toString().replaceAll("\\s+", "").trim();
-                        orderNumber = orderId;
-                        orderNumber = Integer.parseInt(orderDetailsSpinner.getSelectedItem().toString());
-                        url = new URL("http://moortala.com/services/capstone/orders/waiter/edit?orderNumber=" + orderNumber + "&tableNumber=" + tableNumber + "&breakfast=" + breakfast + "&breakfastQty=" + breakfastQty + "&lunch=" + lunch + "&lunchQty=" + lunchQty + "&dinner=" + dinner + "&dinnerQty=" + dinnerQty + "&dessert=" + dessert + "&dessertQty=" + dessertQty + "&notes=CANCELED-" + notes + "&status=" + orderStatus + "&waiterName=" + userName + "&deviceId=" + deviceId + "&userId=" + userID);
-
-                        // Use the Builder class for convenient dialog construction
-                        AlertDialog.Builder builder = new AlertDialog.Builder(WaiterPage.this);
-                        builder.setTitle("CONFIRM ACTION");
-                        builder.setMessage("Cancel order?")
-                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        cm = new ConnectionManager(WaiterPage.this, new Callback() {
-                                            @Override
-                                            public void run(Object result) {
-                                                try {
-                                                    // jsonArray = new JSONArray(result.toString());
-                                                    //  cm = new ConnectionManager(url);
-                                                    jsonObject = new JSONObject(result.toString());
-                                                    Log.d("jsonObject = ", jsonObject.toString());
-                                                    msg = new Messages(WaiterPage.this);
-                                                    msg.displayToast(WaiterPage.this, "Order Canceled");
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                            }
-                                        });
-                                        cm.execute(url);
-                                    }
-                                })
-                                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        // User cancelled the dialog
-                                    }
-                                });
-                        // Create the AlertDialog object and return it
-                        builder.create().show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //display message that it has been canceled
+            case 5:
                 break;
-
-
-
+            case 6:
+                break;
             default:
                 Log.d("???? ", "nothing valid selected");
                 break;
@@ -947,7 +1033,7 @@ public class WaiterPage extends AppCompatActivity {
         tableNumberTextField = (EditText) findViewById(R.id.tableNumberTextField);
         tableNumberTextField.setText("");
         //order status spinner
-        orderActionsSpinner.setSelection(0);
+      //  orderActionsSpinner.setSelection(0);
         //meals
         breakfastSpinner.setSelection(0);
         lunchSpinner.setSelection(0);
@@ -961,7 +1047,8 @@ public class WaiterPage extends AppCompatActivity {
         //clear the notes
         notesEditText = ((EditText) findViewById(R.id.notesEditText));
         notesEditText.setText("");
-        //clear the status details ?
+       // orderActionsSpinner.setSelection(7);
+
     }
 
     public void clearForm(View view) {
@@ -969,14 +1056,34 @@ public class WaiterPage extends AppCompatActivity {
     }
 
     //schedule a notification
-    private void scheduleNotification(Notification notification, int orderId, AlarmManager alarmManager) {
-        Intent notificationIntent = new Intent(this, OrderNotifier.class);
+    private void scheduleNotification(Notification notification, final int orderId, AlarmManager alarmManager) {
+        final Intent notificationIntent = new Intent(this, OrderNotifier.class);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION_ID, orderId);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent pendingIntent;
 
-        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 60000, pendingIntent);
+     //   alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+      //  alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 60000, pendingIntent);
+
+
+      /*  Handler h = new Handler();
+        YourClass yourRunnable = new YourClass();
+        h.postDelayed(youRunnable,1000);*/
+
+        final Handler h = new Handler();
+        final int delay = 5000; //milliseconds
+
+        h.postDelayed(new Runnable(){
+            public void run(){
+                sendBroadcast(notificationIntent);
+                //do something
+                PendingIntent.getBroadcast(WaiterPage.this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                h.postDelayed(this, 5000);
+                Log.d("delay", "run");
+            }
+        }, delay);
+
     }
 
     //get a notification
