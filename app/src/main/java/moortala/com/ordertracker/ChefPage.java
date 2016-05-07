@@ -1165,13 +1165,14 @@ public class ChefPage extends AppCompatActivity {
         }
     }
 
-    private void scheduleNotification(Notification notification, final int orderId, AlarmManager alarmManager) {
+    private void scheduleNotification(final Notification notification, final int orderId, AlarmManager alarmManager) {
         Log.d("scheduleNotification1 ", "scheduleNotification1");
         final Intent notificationIntent = new Intent(this, OrderNotifier.class);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION_ID, orderId);
         notificationIntent.putExtra(OrderNotifier.NOTIFICATION, notification);
 
         pendingIntent = PendingIntent.getBroadcast(this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getActivity(ChefPage.this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + orderId;
         alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         // alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
@@ -1191,6 +1192,10 @@ public class ChefPage extends AppCompatActivity {
                 h.postDelayed(this, 5000);
                 Log.d("delay", "run");
                 PendingIntent.getBroadcast(ChefPage.this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+             /*   PendingIntent.getActivity(ChefPage.this, orderId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);*/
+
+
+
             }
         }, delay);
 
@@ -1199,9 +1204,10 @@ public class ChefPage extends AppCompatActivity {
 
     public  Notification getNotification(String content) {
         Log.d("getNotification ", "getNotification");
-        Notification noti = new Notification.Builder(ChefPage.this)
+        Notification noti = new Notification.Builder(ChefPage.this).setAutoCancel(true)
                 .setContentTitle("ORDER(S) STATUS")
                 .setContentText(content).setSmallIcon(R.mipmap.ic_launcher).build();
+
         Log.d("getNotification2 ", "getNotification2");
         return noti;
     }

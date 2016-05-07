@@ -783,18 +783,24 @@ public class WaiterPage extends AppCompatActivity {
         //get data from the inputs
         //get table number
         tableNumberTextField = (EditText) findViewById(R.id.tableNumberTextField);
+
         deviceId = OrderData.getDeviceMacAddress(WaiterPage.this);
 
         Log.d("orderStatus = " , orderStatus + "");
         //chose an action to perform
         switch (orderStatus) {
             case 0://new order
-                if (tableNumberTextField.getText().toString() == null || (breakfast == 0 && lunch == 0 && dinner == 0 && dessert == 0)) {
+                if (tableNumberTextField.getText().toString() == null || "".equals(tableNumberTextField.getText()) || (breakfast == 0 && lunch == 0 && dinner == 0 && dessert == 0)) {
                     msg = new Messages(WaiterPage.this);
                     msg.displayToast(WaiterPage.this, "Please fill a Table#, meal and Qty fields");
                 } else {
                     //get current info from screen
-                    tableNumber = Integer.parseInt(tableNumberTextField.getText().toString());
+                    try {
+                        tableNumber = Integer.parseInt(tableNumberTextField.getText().toString());
+                    } catch (NumberFormatException e) {
+                        tableNumber = 1;
+                       // e.printStackTrace();
+                    }
                     notesEditText = (EditText) findViewById(R.id.notesEditText);
                     notes = notesEditText.getText().toString();
                     //notes = notes.replaceAll("[^a-zA-Z]+", "").trim();
